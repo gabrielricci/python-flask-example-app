@@ -1,0 +1,210 @@
+FORMAT: 1A
+HOST: http://luizalabs-challenge.herokuapp.com
+
+# LuizaLabs Challenge
+This document has the purpose to explain how to set up and run the code challenge proposed by Luiza Labs.
+
+## Requirements
+This document assumes that you already have Python 2.7, Pip, virtualenv and virtualenvwrapper installed. If you do not, please check the following reference:
+
+ - http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+## Clone repository and install requirements
+
+```
+# clone the repository
+git clone git@bitbucket.org:gabrielricci/luizalabs-challenge.git
+
+# switch to the correct folder
+cd luizalabs-challenge
+
+# Setup a new virtualenv
+mkvirtualenv luizalabs-challenge
+
+# Install requirements
+pip install -r requirements.txt
+```
+
+
+# Running the tests
+You can run the test suite without any other configurations, all you have to do is enable your virtualenv and run the following command:
+
+```nosetests --with-coverage --cover-package=luizalabs```
+
+**The test suite will use an in-memory sqlite in which it will perform the operations.**
+
+
+# Group Running the application
+
+## Setting up the database
+
+In order to run the application you gotta setup your database first. This app uses SQLAlchemy as an ORM, it means that you can use the relational database you want, the list of supported databases include:
+
+ - MySQL
+ - SQLite
+ - PostgreSQL
+ - Oracle
+ - Microsoft SQL Server
+
+Please check http://docs.sqlalchemy.org/en/latest/dialects/index.html for further information.
+
+The app will get the database connection information from an environment variable called ```DATABASE_URI```, examples of valid values for this environment variable are:
+
+```
+# SQLite, where <path> is relative:
+export DATABASE_URI="sqlite:///<path>.db"
+
+# SQLite running in memory
+export DATABASE_URI="sqlite://"
+
+# MySQL
+export DATABASE_URI="mysql://scott:tiger@localhost/foo"
+```
+
+**QUICK TIP:** You can easily create a new SQLite database using the following command:
+```sqlite3 database.db```
+
+Please check http://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls for more examples.
+
+
+## Setting up the facebook access token
+
+The Facebook Graph API, which is used by this app, requires an OAuth access token. For more information regarding how to obtain an access token, please read https://developers.facebook.com/docs/facebook-login/access-tokens/.
+
+After generating a valid access token, you must set it in an environment variable called ```FB_ACCESS_TOKEN```:
+
+```
+# Set the FB access token env var
+export FB_ACCESS_TOKEN="SomeToken"
+```
+
+## Running the app (finally!)
+
+Ok so you finally have your repository cloned, virtualenv installed **and active**, dependencies installed, environment variables all set, now all you gotta do is run the app with the following command:
+
+```
+# Run the app
+uwsgi -w wsgi:app --socket 0.0.0.0:5555 --protocol http
+```
+
+If you forgot any environment variable, an error will be shown at your console. If you also wish you can change 5555 to any other port of your choice.
+
+# Group Endpoints
+
+## Users [/users]
+
+### Creating a new user [POST /users]
+
+Given a ```facebook id```, create a new user.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+            Content-Type: application/x-www-form-urlencoded
+
+    + Body
+
+            facebook_id=123
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "_links": {
+                    "self": {
+                        "href": "/users/123"
+                    }
+                },
+                "facebook_id": "123",
+                "name": "John Doe",
+                "gender": "male"
+            }
+
+### Retrieving user data [GET /users/{id}]
+
+Retrieve user's information.
+
++ Parameters
+
+    + id: `123` (string) - Facebook id of the user.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "_links": {
+                    "self": {
+                        "href": "/users/123"
+                    }
+                },
+                "facebook_id": "123",
+                "name": "John Doe",
+                "gender": "male"
+            }
+
+### Listing users [GET /users?limit={limit}]
+
+List every user.
+
++ Parameters
+
+    + limit: `10` (int) - Limit the number of returned users **(Optional)**.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "_links": {
+                        "self": {
+                            "href": "/users/123"
+                        }
+                    },
+                    "facebook_id": "123",
+                    "name": "John Doe",
+                    "gender": "male"
+                },
+                {
+                    "_links": {
+                        "self": {
+                            "href": "/users/456"
+                        }
+                    },
+                    "facebook_id": "456",
+                    "name": "John Doe",
+                    "gender": "male"
+                }
+            ]
+
+### Deleting an user [DELETE /users/{id}]
+
+Delete an user.
+
++ Parameters
+
+    + id: `123` (string) - Facebook id of the user.
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204
