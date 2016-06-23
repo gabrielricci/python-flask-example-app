@@ -1,8 +1,15 @@
 FORMAT: 1A
-HOST: http://luizalabs-challenge.herokuapp.com
+HOST: http://luizalabs-challenge
 
 # LuizaLabs Challenge
 This document has the purpose to explain how to set up and run the code challenge proposed by Luiza Labs.
+
+## Differences from the proposed challenge to the presented solution
+This challenge seems to be very outdated, and newer versions of the Graph API have deprecated the **username** field, and it's no longer returning the **gender** attribute, so the **username** have been completely removed and the **gender** will be inserted as NULL if the Graph API do not return it.
+
+## Terminology
+
+ - **Facebook ID**: The ID of the user on Facebook.
 
 ## Requirements
 This document assumes that you already have Python 2.7, Pip, virtualenv and virtualenvwrapper installed. If you do not, please check the following reference:
@@ -66,6 +73,22 @@ export DATABASE_URI="mysql://scott:tiger@localhost/foo"
 
 Please check http://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls for more examples.
 
+
+After setting up the environment variable, you need to create the required table struture using the following command:
+
+```
+python setup_database.py
+```
+
+You should see the following output
+
+```
+Deleting tables (if they exist)...
+Creating database tables...
+You're all set
+```
+
+If you got this far, your database is ready to rock.
 
 ## Setting up the facebook access token
 
