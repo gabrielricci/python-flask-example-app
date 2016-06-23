@@ -1,4 +1,3 @@
-## Required environment variables
+## LuizaLabs Challenge
 
-DATABASE_URI: The database uri (e.g.: sqlite:///tmp/luizalabs.db)
-FB_ACCESS_TOKEN: The facebook's OAuth token to access the graph API
+Please see the documentation in http://gabrielricci.github.io/docs/luizalabs-challenge.html
