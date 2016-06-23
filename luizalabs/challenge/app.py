@@ -1,8 +1,28 @@
 import os
+import logging.config
 
 import flask
 import sqlalchemy
 from sqlalchemy import orm
+
+
+def create_app(settings=None):
+    app = flask.Flask(__name__)
+
+    if not settings:
+        settings = {
+            "DATABASE_URI": os.environ["DATABASE_URI"],
+            "FB_ACCESS_TOKEN": os.environ["FB_ACCESS_TOKEN"],
+        }
+
+    app.config.update(settings)
+
+    register_blueprints(app)
+    setup_database(app)
+
+    logging.config.fileConfig("logconfig.ini")
+
+    return app
 
 
 def register_blueprints(app):
@@ -12,8 +32,8 @@ def register_blueprints(app):
 
 
 def setup_database(app):
-    engine = sqlalchemy.create_engine(os.environ["DATABASE_URI"])
-    Session = orm.sessionmaker(bind=engine)
+    app.engine = sqlalchemy.create_engine(app.config["DATABASE_URI"])
+    Session = orm.sessionmaker(bind=app.engine)
 
     from luizalabs.challenge.models import repository
 
@@ -30,9 +50,3 @@ def setup_database(app):
             flask.g.db_session.rollback()
 
         return response
-
-
-app = flask.Flask(__name__)
-
-register_blueprints(app)
-setup_database(app)

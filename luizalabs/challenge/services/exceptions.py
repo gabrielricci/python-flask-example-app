@@ -1,2 +1,6 @@
-class FBUserNotFound(Exception):
+class FBUserNotFoundError(Exception):
+    pass
+
+
+class FBUnauthorizedError(Exception):
     pass
