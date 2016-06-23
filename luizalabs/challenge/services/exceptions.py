@@ -1,0 +1,2 @@
+class FBUserNotFound(Exception):
+    pass
