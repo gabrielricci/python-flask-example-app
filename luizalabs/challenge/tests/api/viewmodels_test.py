@@ -3,7 +3,7 @@ from luizalabs.challenge.api import viewmodels
 from luizalabs.challenge.tests import base
 
 
-class ViewmodelsTest(base.BaseTest):
+class ViewmodelsTest(base.SqlTest, base.BaseTest):
     def setUp(self):
         super(ViewmodelsTest, self).setUp()
 
@@ -16,6 +16,7 @@ class ViewmodelsTest(base.BaseTest):
             )
         )
 
-        user_viewmodel = viewmodels.user(user)
-        self.assertEquals(user_viewmodel["_links"]["self"]["href"],
-                          self.url_for("users.get_by_id", facebook_id="123"))
+        with self.app.test_request_context():
+            user_viewmodel = viewmodels.user(user)
+            self.assertEquals(user_viewmodel["_links"]["self"]["href"],
+                              self.url_for("users.get_by_id", facebook_id="123"))

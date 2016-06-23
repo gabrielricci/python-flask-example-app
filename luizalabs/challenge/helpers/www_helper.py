@@ -2,11 +2,7 @@ import flask
 import json
 
 
-def json_response(status_code, data, additional_headers=None):
-    headers = {
-        "Content-Type": "application/json",
-    }
-
+def json_response(status_code, data):
     return flask.make_response(json.dumps(data),
                                status_code,
-                               headers)
+                               {"Content-Type": "application/json"})
