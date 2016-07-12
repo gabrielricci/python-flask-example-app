@@ -1,3 +1,3 @@
-## LuizaLabs Challenge
+## Python example app
 
-Please see the documentation in http://gabrielricci.github.io/docs/luizalabs-challenge.html
+This is just an example app showing how to boostrap python, flask, SQLAlchemy and some test tools. I also use it as my base app when creating new projects.
